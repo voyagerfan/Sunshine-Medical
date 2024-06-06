@@ -1,0 +1,155 @@
+<html>
+<!-- Adapted from the people.html UI design -->
+
+<!-- 
+Citation Scope: Entire people.j2 file - Utilized basic structuring of jinja files to create browse, form hide functions for all basic create/read/delete functions on each page. Substituted relevant project variables
+Date: 12JUN2023
+Originality: Adapated 
+Source: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+<head>
+	<title>Tests_Equipment</title>
+	<link href="../static/style_tests_equipment.css" rel="stylesheet">
+	<script language="JavaScript">
+	function showform(dowhat) {
+		/*
+		 * four DIVS: browse, insert, update, delete
+		 * this function sets one visible the others not
+		 */
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'update') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'delete') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'block';
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newTestsEquipment() {
+		showform('insert');
+	}
+
+	function updatePerson(pid) {
+		showform('update');
+	}
+
+	function deletePerson(pid) {
+		showform('delete');
+	}
+
+	function browseTestsEquipment() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	</script>
+</head>
+
+<body onload="browseTestsEquipment()">
+	
+	<div class="anchortags">
+	<h1>Tests_Equipment</h1> [ <a href="patients">Patients</a> | <a href="/testrecords">Test Records</a> | <a href="/tests">Tests</a>  | <a href="/departments">Departments</a> | <a href="/equipment">Equipment</a> | <a href="/testsequipment">Tests_Equipment</a> ]
+	</div>
+
+	<div id="browse" class=mainbody>
+		<p><a href="#" onClick="newTestsEquipment()">Add Tests_Equipment</a> </p>
+		<table border="1" cellpadding="5">
+            <!-- Access data tuple passed from app.py --> 
+            {% if data %}
+			    <thead>
+				    <tr>
+					    <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+					    
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+					
+                        <!-- End of this for loop -->
+                        {% endfor %} 
+                    </tr>
+
+				<tbody>
+					<!-- Now, iterate through every item in data -->{% for item in data %}
+					    <tr>
+						    <!-- Then iterate through every key in the current item dictionary -->
+                            {% for key in item.keys() %}
+
+						    <!-- Create a <td> element with the value of that key in it -->
+						    <td> {{item[key]}} </td> 
+                            {% endfor %}
+
+							<!-- Create our edit/delete buttons -->
+						    <td><a href="delete_test_equip/{{item.test_equip_id}}" class="btn btn-default">Delete</a></td>
+
+					    </tr> 
+                        {% endfor %} 
+                {% endif %} 
+        </table>   
+	<p>&nbsp;</p>
+	</div>	<!-- browse -->
+
+	<div id="insert">
+		<!-- form to INSERT new data into Tests Table-->
+		<form id="insertTestsEquipment" action="/testsequipment" method="post">
+			<legend><strong>Add Tests_Equipment</strong></legend>
+			<fieldset>
+                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
+				
+				<label for="test_name">Test Name</label>
+				<select class="form-control" id="test_name" name="test_name" pattern="[0-4]{1}" placeholder="" required> 
+					<!-- Access our test tuple passed from app.py-->
+					<option value="0">&nbsp;</option>
+					
+					{% for test in tests %}
+
+						<option value="{{ test['test_id'] }}"> {{test['test_name']}}</option> 
+
+					<!-- End of this for loop -->
+					{% endfor %}
+				</select>
+
+				<label for="equip_name">Equipment Name</label>
+				<select class="form-control" id="equip_name" name="equip_name" pattern="[0-4]{1}" placeholder="" required> 
+					<!-- Access our test tuple passed from app.py-->
+					<option value="0">&nbsp;</option>
+					
+					{% for equip in equipment %}
+
+						<option value="{{ equip['equip_id'] }}"> {{equip['equip_name']}}</option> 
+
+					<!-- End of this for loop -->
+					{% endfor %}
+				</select>
+
+            </fieldset>
+
+            <!-- Create 'Add Department' and 'Cancel' buttons -->
+			<input type="submit" value="Add Tests_Equipment" name="Add_TestsEquipment" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseTestsEquipment()"> 
+        </form>
+	</div><!--insert-->
+	
+</body>
+</html>

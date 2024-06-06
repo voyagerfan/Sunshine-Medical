@@ -1,0 +1,87 @@
+<html>
+
+<!-- 
+Citation Scope: Entire edit_people.j2 File - Utilized basic structuring for forms and HTML rendering substituting in relevant project variables.
+Date: 12JUN2023
+Originality: Adapted
+Source: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/edit_people.j2
+-->
+
+<head>
+	<title>Edit Test</title>
+    <link href="../static/style_tests.css" rel="stylesheet">
+</head>
+
+<body>
+    <div>
+        <table border="1" cellpadding="5"> 
+            <caption> Editing Test: </caption>
+            <!-- Access data tuple passed from app.py -->
+            {% if data %}
+                <thead>
+                    <tr>
+                        <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+                        <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+                        
+                        <!-- End of this for loop -->
+                        {% endfor %} 
+                    </tr>
+
+                <tbody>
+                 <!-- Now, iterate through every item in data -->
+                    {% for item in data %}
+                    <tr>
+                        <!-- Then iterate through every key in the current item dictionary -->
+                        {% for key in item.keys() %}
+                        
+                        <!-- Create a <td> element with the value of that key in it -->
+                        <td>{{item[key]}}</td> {% endfor %} 
+                    </tr> 
+                    {% endfor %} 
+            {% endif %} 
+        </table>
+
+        <div id="edit">
+            <!-- form to edit data in Tests-->
+            <form id="editTest" action="/edit_test/{{data[0].test_id}}" method="post">
+                <legend><strong>Edit Test</strong></legend>
+                <fieldset>
+                    <!-- We can preset form inputs to match attributes currently stored for 'id' of test to be updated via value= and accessing our passed data tuple -->
+                    <!-- Create hidden form input to store the passed 'id' of the test we are editing so we can access it easily in our 'POST' method in our app.py -->
+                    
+                    <input type="hidden" value="{{data[0].test_id}}" class="form-control" id="test_id" name="test_id" required>
+                    
+                    <label for="test_name">Test Name:</label>
+                    <input type="text" value="{{data[0].test_name}}" class="form-control" id="test_name" name="test_name" required>
+                    
+                    <label for="test_desc">Test Desc:</label>
+                    <input type="text" value="{{data[0].test_desc}}" class="form-control" id="test_desc" name="test_desc" required>
+
+                    <label for="dept_name">Department Name</label>
+                    <select class="form-control" id="dept_name" name="dept_name" pattern="[0-4]{1}" placeholder="" required> 
+                            <!-- Access our department tuple passed from app.py-->
+                            
+                            {% for department in departments %}
+
+                                {% if department['dept_name'] == data[0].dept_name %}
+
+                                    <option value="{{ department['dept_id'] }}" selected>{{ department['dept_name'] }}</option>
+
+                                {% else %}
+
+                                    <option value="{{ department['dept_id'] }}">{{ department['dept_name'] }}</option>
+
+                                {% endif %}
+                            <!-- End of this for loop -->
+                            {% endfor %}
+                    </select>
+
+                </fieldset>
+                <input type="submit" value="Edit Test" name="Edit_Test" class="btn btn-primary" style="margin:.5rem;">
+                <a href='/tests'><input class="btn" type="button" value="cancel"></a>
+            </form>
+
+</html>

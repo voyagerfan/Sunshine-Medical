@@ -1,0 +1,199 @@
+<html>
+<!-- Adapted from the people.html UI design -->
+
+<!-- 
+Citation Scope: Entire people.j2 file - Utilized basic structuring of jinja files to create browse, form hide functions for all basic create/read/delete functions on each page. Substituted relevant project variables
+Date: 12JUN2023
+Originality: Adapated 
+Source: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/people.j2
+-->
+
+<head>
+	<title>Patients</title>
+	<link href="../static/style_patients.css" rel="stylesheet">
+	<script language="JavaScript">
+	function showform(dowhat) {
+		/*
+		 * four DIVS: browse, insert, update, delete
+		 * this function sets one visible the others not
+		 */
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'update') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'delete') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'block';
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+
+	function newPatient() {
+		showform('insert');
+	}
+
+	function updatePerson(pid) {
+		showform('update');
+	}
+
+	function deletePerson(pid) {
+		showform('delete');
+	}
+
+	function browsePatients() {
+		showform('browse');
+	}
+
+	function showAll() {
+		showform('all');
+	}
+	
+	function alertClick() {
+		alert("The record will be added. Press OK to continue.");
+	}
+	
+	</script>
+</head>
+
+<body onload="browsePatients()">
+	<h1>Patients</h1> 
+	
+	<div class="anchortags">
+	[ <a href="patients">Patients</a> | <a href="/testrecords">Test Records</a> | <a href="/tests">Tests</a>  | <a href="/departments">Departments</a> | <a href="/equipment">Equipment</a> | <a href="/testsequipment">Tests_Equipment</a> ]
+	</div>
+
+	<div id="browse" class=mainbody>
+		<p><a href="#" onClick="newPatient()">Add New</a> </p>
+		<table border="1" cellpadding="5">
+            <!-- Access data tuple passed from app.py --> 
+            {% if data %}
+			    <thead>
+				    <tr>
+					    <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+					    
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+					
+                        <!-- End of this for loop -->
+                        {% endfor %} 
+                    </tr>
+
+				<tbody>
+					<!-- Now, iterate through every item in data -->{% for item in data %}
+					    <tr>
+						    <!-- Then iterate through every key in the current item dictionary -->
+                            {% for key in item.keys() %}
+
+						    <!-- Create a <td> element with the value of that key in it -->
+						    <td> {{item[key]}} </td> 
+                            {% endfor %}
+
+                            <!-- Create our edit/delete buttons -->
+						    <td><a href="edit_patient/{{item.patient_id}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_patient/{{item.patient_id}}" class="btn btn-default">Delete</a></td>
+
+					    </tr> 
+                        {% endfor %} 
+                {% endif %} 
+        </table>   
+	<p>&nbsp;</p>
+	</div>	<!-- browse -->
+
+	<div id="insert">
+		<!-- form to INSERT new data into Patients Table-->
+		<form id="insertPerson" action="/patients" method="post" onsubmit="return alertClick()">
+			<legend><strong>Add Patient</strong></legend>
+			<fieldset>
+                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
+				<label for="first_name">First name:</label>
+				<input type="text" class="form-control" id="first_name" name="first_name" required>
+
+				<label for="last_name">Last name:</label>
+				<input type="text" class="form-control" id="last_name" name="last_name" required>
+
+				<label for="birthday">Birthday:</label>
+				<input type="date" class="form-control" id="birthday" name="birthday" required>
+
+				<label for="phone">Phone:</label>
+				<input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="XXX-XXX-XXXX" required>
+
+				<label for="email">Email:</label>
+				<input type="text" class="form-control" id="email" name="email" required>
+
+				<label for="street1">Street 1:</label>
+				<input type="text" class="form-control" id="street1" name="street1" required>
+
+				<label for="street2">Street 2:</label>
+				<input type="text" class="form-control" id="street2" name="street2">
+
+				<label for="city">City:</label>
+				<input type="text" class="form-control" id="city" name="city" required>
+
+				<label for="zip">Zip:</label>
+				<input type="text" pattern="[0-9]*" class="form-control" id="zip" name="zip" required>
+				 
+            </fieldset>
+
+            <!-- Create 'Add Person' and 'Cancel' buttons -->
+			<input type="submit" value="Add Patient" name="Add_Patient" class="btn btn-primary" id="Add_Patient" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browsePatients()"> 
+        </form>
+	</div><!--insert-->
+	<div id="edit">
+		<!-- form to edit data in bsg_people-->
+		<form id="editPatient" action="/edit_patient/{{data[0].patient_id}}" method="post">
+			<legend><strong>Edit Person</strong></legend>
+			<fieldset>
+				<input type="hidden" value="{{data[0].patient_id}}" class="form-control" id="patient_id" name="patient_id" required>
+				
+				<label for="first_name">First name:</label>
+				<input type="text" class="form-control" id="first_name" name="first_name" placeholder="{{data[0].first_name}}" required>
+				
+				<label for="last_name">Last name:</label>
+				<input type="text" class="form-control" id="last_name" name="last_name" placeholder="{{data[0].last_name}}" required>
+				
+				<label for="birthday">Birthday:</label>
+				<input type="date" class="form-control" id="birthday" name="birthday" placeholder="{{data[0].birthday}}" required>
+
+				<label for="phone">Phone:</label>
+				<input type="tel" class="form-control" id="phone" name="phone" placeholder="{{data[0].phone}}" required>
+
+				<label for="email">Email:</label>
+				<input type="text" class="form-control" id="email" name="email" placeholder="{{data[0].email}}" required>
+
+				<label for="street1">Street 1:</label>
+				<input type="text" class="form-control" id="street1" name="street1" placeholder="{{data[0].street1}}" required>
+
+				<label for="street2">Street2:</label>
+				<input type="text" class="form-control" id="street2" name="street2" placeholder="{{data[0].street2}}">
+
+				<label for="city">City:</label>
+				<input type="text" class="form-control" id="city" name="city" placeholder="{{data[0].city}}" required>
+
+				<label for="zip">Zip:</label>
+				<input type="text" pattern="[0-9]*" class="form-control" id="zip" name="zip" placeholder="{{data[0].zip}}" required>
+
+				 </fieldset>
+				<input class="btn" type="button" value="Cancel" onClick="browsePatients()" style="margin:.5rem;"> 
+        </form>
+	</div><!--edit-->
+</body>
+</html>

@@ -1,0 +1,90 @@
+<html>
+
+<!-- 
+Citation Scope: Entire edit_people.j2 File - Utilized basic structuring for forms and HTML rendering substituting in relevant project variables.
+Date: 12JUN2023
+Originality: Adapted
+Source: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/edit_people.j2
+-->
+
+<head>
+	<title>Edit Patient</title>
+    <link href="../static/style_patients.css" rel="stylesheet">
+</head>
+
+<body>
+    <div>
+        <table border="1" cellpadding="5"> 
+            <caption> Editing Patient: </caption>
+            <!-- Access data tuple passed from app.py -->
+            {% if data %}
+                <thead>
+                    <tr>
+                        <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+                        <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+                        
+                        <!-- End of this for loop -->
+                        {% endfor %} 
+                    </tr>
+
+                <tbody>
+                 <!-- Now, iterate through every item in data -->
+                    {% for item in data %}
+                    <tr>
+                        <!-- Then iterate through every key in the current item dictionary -->
+                        {% for key in item.keys() %}
+                        
+                        <!-- Create a <td> element with the value of that key in it -->
+                        <td>{{item[key]}}</td> {% endfor %} 
+                    </tr> 
+                    {% endfor %} 
+            {% endif %} 
+        </table>
+
+        <div id="edit">
+            <!-- form to edit data in Patients-->
+            <form id="editPatient" action="/edit_patient/{{data[0].patient_id}}" method="post">
+                <legend><strong>Edit Person</strong></legend>
+                <fieldset>
+                    <!-- We can preset form inputs to match attributes currently stored for 'id' of person to be updated via value= and accessing our passed data tuple -->
+                    <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
+                    
+                    <input type="hidden" value="{{data[0].patient_id}}" class="form-control" id="patient_id" name="patient_id" required>
+                    
+                    <label for="first_name">First Name:</label>
+                    <input type="text" value="{{data[0].first_name}}" class="form-control" id="first_name" name="first_name" required>
+                    
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" value="{{data[0].last_name}}" class="form-control" id="last_name" name="last_name" required>
+
+                    <label for="birthday">Birthday:</label>
+                    <input type="date" value="{{data[0].birthday}}" class="form-control" id="birthday" name="birthday" required>
+
+                    <label for="phone">Phone:</label>
+                    <input type="tel" value="{{data[0].phone}}" class="form-control" id="phone" name="phone" required>
+
+                    <label for="email">Email:</label>
+                    <input type="text" value="{{data[0].email}}" class="form-control" id="email" name="email" required>
+
+                    <label for="street1">Street 1:</label>
+                    <input type="text" value="{{data[0].street1}}" class="form-control" id="street1" name="street1" required>
+
+                    <label for="street2">Street 2:</label>
+                    <input type="text" value="{{data[0].street2}}" class="form-control" id="street2" name="street2">
+
+                    <label for="city">City:</label>
+                    <input type="text" value="{{data[0].city}}" class="form-control" id="city" name="city" required>
+
+                    <label for="zip">Zip:</label>
+                    <input type="text" pattern="[0-9]*" value="{{data[0].zip}}" class="form-control" id="zip" name="zip" required>
+
+                
+                </fieldset>
+                <input type="submit" value="Edit Patient" name="Edit_Patient" class="btn btn-primary" style="margin:.5rem;">
+                <a href='/patients'><input class="btn" type="button" value="cancel"></a>
+            </form>
+
+</html>

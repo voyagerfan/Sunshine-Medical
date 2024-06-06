@@ -1,0 +1,89 @@
+<html>
+
+<!-- 
+Citation Scope: Entire edit_people.j2 File - Utilized basic structuring for forms and HTML rendering substituting in relevant project variables.
+Date: 12JUN2023
+Originality: Adapted
+Source: https://github.com/osu-cs340-ecampus/flask-starter-app/blob/master/bsg_people_app/templates/edit_people.j2
+-->
+
+<head>
+	<title>Edit Equipment</title>
+    <link href="../static/style_equipment.css" rel="stylesheet">
+</head>
+
+<body>
+    <div>
+        <table border="1" cellpadding="5"> 
+            <caption> Editing Equipment: </caption>
+            <!-- Access data tuple passed from app.py -->
+            {% if data %}
+                <thead>
+                    <tr>
+                        <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+                        <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+                        
+                        <!-- End of this for loop -->
+                        {% endfor %} 
+                    </tr>
+
+                <tbody>
+                 <!-- Now, iterate through every item in data -->
+                    {% for item in data %}
+                    <tr>
+                        <!-- Then iterate through every key in the current item dictionary -->
+                        {% for key in item.keys() %}
+                        
+                        <!-- Create a <td> element with the value of that key in it -->
+                        <td>{{item[key]}}</td> {% endfor %} 
+                    </tr> 
+                    {% endfor %} 
+            {% endif %} 
+        </table>
+
+        <div id="edit">
+            <!-- form to edit data in Equipment-->
+            <form id="editEquip" action="/edit_equip/{{data[0].equip_id}}" method="post">
+                <legend><strong>Edit Equipment</strong></legend>
+                <fieldset>
+                    <!-- We can preset form inputs to match attributes currently stored for 'id' of test to be updated via value= and accessing our passed data tuple -->
+                    <!-- Create hidden form input to store the passed 'id' of the test we are editing so we can access it easily in our 'POST' method in our app.py -->
+                    
+                    <input type="hidden" value="{{data[0].equip_id}}" class="form-control" id="equip_id" name="equip_id" required>
+                    
+                    <label for="equip_name">Equipment Name:</label>
+                    <input type="text" value="{{data[0].equip_name}}" class="form-control" id="equip_name" name="equip_name" required>
+                    
+                    <label for="availability">Availability:</label>
+                    <select class="form-control" id="availability" name="availability" pattern="[0-4]{1}" placeholder="" required> 
+                        <!-- Access our department tuple passed from app.py-->
+
+                        {% if data[0].availability == 'Yes'%}
+
+                            <option value="1" selected>Yes</option>
+                            <option value="0">No</option>
+
+                        {% else %}
+
+                            <option value="1">Yes</option>
+                            <option value="0" selected>No</option>
+
+                        {% endif %}
+                            <!-- End of this for loop -->
+				    </select>
+
+                    <label for="calibration_date">Calibration Date:</label>
+                    <input type="date" value="{{data[0].calibration_date}}" class="form-control" id="calibration_date" name="calibration_date" required>
+
+                    <label for="next_maintenance">Next Maintenance:</label>
+                    <input type="date" value="{{data[0].next_maintenance}}" class="form-control" id="next_maintenance" name="next_maintenance" required>
+
+                </fieldset>
+                <input type="submit" value="Edit Equipment" name="Edit_Equipment" class="btn btn-primary" style="margin:.5rem;">
+                <a href='/equipment'><input class="btn" type="button" value="Cancel"></a>
+            </form>
+
+</html>
