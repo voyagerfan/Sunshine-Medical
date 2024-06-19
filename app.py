@@ -435,6 +435,11 @@ def delete_test_equip(test_equip_id):
     return redirect("/testsequipment")
 # Listener
 if __name__ == "__main__":
-
+    '''
+    run this code when deploying live.
     #Start the app on port 3000, it will be different once hosted
     app.run(port=12513, debug=True)
+    '''
+
+    # following code is used to run code locally.
+    app.run(host='127.0.0.1', port=8080, debug=True)
