@@ -3,9 +3,6 @@
 Welcome to the Sunshine Medical Application
 
 ## Table of Contents
-
-- [Sunshine Medical](#sunshine-medical)
-  - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [App File Structure](#app-file-structure)
   - [Features](#features)
